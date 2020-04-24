@@ -1,6 +1,6 @@
 FROM node:12.16.1-alpine
 LABEL EMAIL="dalongrong"
-RUN npm config set registry https://registry.npm.taobao.org
+RUN yarn config set registry https://registry.npm.taobao.org
 # Create a directory where our app will be placed
 RUN mkdir -p /usr/src/app
 
@@ -11,7 +11,7 @@ WORKDIR /usr/src/app
 COPY package.json *.js /usr/src/app/
 
 # Install dependecies
-RUN npm install --production
+RUN yarn  --production
 
 # Expose the port the app runs in
 EXPOSE 4000
