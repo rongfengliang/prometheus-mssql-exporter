@@ -1,0 +1,37 @@
+{
+  "name": "prometheus-mssql-exporter",
+  "version": "0.4.1",
+  "main": "index.js",
+  "private": false,
+  "keywords": [
+    "prometheus",
+    "mssql",
+    "exporter",
+    "metrics"
+  ],
+  "author": {
+    "name": "Pierre Awaragi",
+    "email": "pierre@awaragi.com"
+  },
+  "license": "MIT",
+  "readmeFilename": "README.md",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rongfengliang/prometheus-mssql-exporter.git"
+  },
+  "bugs": {
+    "url": "https://github.com/rongfengliang/prometheus-mssql-exporter/issues"
+  },
+  "scripts": {
+    "build": "docker build . -t dalongrong/prometheus-mssql-exporter"
+  },
+  "dependencies": {
+    "debug": "^4.1.1",
+    "express": "^4.17.1",
+    "prom-client": "^12.0.0",
+    "tedious": "^8.3.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.3"
+  }
+}
