@@ -22,7 +22,7 @@ Prometheus exporter for Microsoft SQL Server (MSSQL). Exposes the following metr
 *  mssql_available_physical_memory_kb Available physical memory in KB
 *  mssql_total_page_file_kb Total page file in KB
 *  mssql_available_page_file_kb Available page file in KB
-
+*  mssql_database_memery_cache_size_mb in mb
 Please feel free to submit other interesting metrics to include.
 
 Usage
