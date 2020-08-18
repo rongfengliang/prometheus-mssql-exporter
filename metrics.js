@@ -197,6 +197,33 @@ from sys.dm_os_sys_memory`,
     }
 };
 
+const mssql_database_memery = {
+    metrics: {
+        mssql_database_memery_cache_size_mb: new client.Gauge({name: 'mssql_database_memery_cache_size_mb', help: 'Database cache memory in mb',labelNames: ['database']}),
+    },
+    query: `SELECT
+	COUNT(*)* 8 / 1024 AS 'CACHE_SIZE_MB',
+	CASE
+		DATABASE_ID WHEN 32767 THEN 'RESOURCEDB'
+		ELSE DB_NAME(DATABASE_ID)
+	END AS 'DATEBASE'
+FROM
+	SYS.DM_OS_BUFFER_DESCRIPTORS
+GROUP BY
+	DB_NAME(DATABASE_ID),
+	DATABASE_ID
+ORDER BY
+	'CACHE_SIZE_MB' DESC`,
+    collect: function (rows, metrics) {
+        for (let i = 0; i < rows.length; i++) {
+            const row = rows[i];
+            const mssql_database_memery_cache_size_mb = Number.parseFloat(row[0].value);
+            const mssql_database_memery_databasename = row[1].value;
+            metrics.mssql_database_memery_cache_size_mb.set({database: mssql_database_memery_databasename},mssql_database_memery_cache_size_mb);
+        }
+    }
+};
+
 const metrics = [
     mssql_instance_local_time,
     mssql_connections,
@@ -208,7 +235,8 @@ const metrics = [
     mssql_io_stall,
     mssql_batch_requests,
     mssql_os_process_memory,
-    mssql_os_sys_memory
+    mssql_os_sys_memory,
+    mssql_database_memery
 ];
 
 module.exports = {
