@@ -212,6 +212,36 @@ const mssql_database_memery = {
     }
 };
 
+const mssql_host_conenct = {
+    metrics: {
+        mssql_host_conenct_count: new client.Gauge({ name: 'mssql_host_conenct_count', help: 'mssql host conenct count', labelNames: ['hostname'] }),
+    },
+    query: `select host_name,count(*) from sys.dm_exec_sessions where is_user_process=1 group by host_name`,
+    collect: function (rows, metrics) {
+        for (let i = 0; i < rows.length; i++) {
+            const row = rows[i];
+            const mssql_host_connect_count = Number.parseFloat(row[1].value);
+            const mssql_host_hostname = row[0].value;
+            metrics.mssql_host_conenct_count.set({ hostname: mssql_host_hostname }, mssql_host_connect_count);
+        }
+    }
+};
+
+const mssql_network_packs = {
+    metrics: {
+        mssql_network_packs_read_kb: new client.Gauge({ name: 'mssql_network_packs_read_kb', help: 'mssql host conenct mssql_network_packs read in kb'}),
+        mssql_network_packs_write_kb: new client.Gauge({ name: 'mssql_network_packs_write_kb', help: 'mssql host conenct mssql_network_packs write in kb'})
+    },
+    query: `SELECT round(SUM(net_packet_size * 1.0 * num_reads / 1024), 0) AS read_kb , round(SUM(net_packet_size * 1.0 * num_writes / 1024), 0) AS write_kb FROM sys.dm_exec_connections WHERE session_id IN ( SELECT session_id FROM sys.dm_exec_sessions WHERE is_user_process = 1 )`,
+    collect: function (rows, metrics) {
+        const mssql_network_packs_read_kb = Number.parseFloat(rows[0][0].value);
+        const mssql_network_packs_write_kb = Number.parseFloat(rows[0][1].value);
+        metrics.mssql_network_packs_read_kb.set(mssql_network_packs_read_kb);
+        metrics.mssql_network_packs_write_kb.set(mssql_network_packs_write_kb);
+
+    }
+};
+
 const metrics = [
     mssql_instance_local_time,
     mssql_connections,
@@ -224,7 +254,9 @@ const metrics = [
     mssql_batch_requests,
     mssql_os_process_memory,
     mssql_os_sys_memory,
-    mssql_database_memery
+    mssql_database_memery,
+    mssql_host_conenct,
+    mssql_network_packs
 ];
 
 module.exports = {
