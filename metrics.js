@@ -242,6 +242,44 @@ const mssql_network_packs = {
     }
 };
 
+
+
+const mssql_logspace = {
+    metrics: {
+        mssql_logspace_size_mb: new client.Gauge({ name: 'mssql_logspace_size_mb', help: 'mssql  log file size in mb',labelNames: ['database','status']}),
+    },
+    query: `SELECT DB_NAME(database_id) AS DatabaseName, Name, Physical_Name , size * 8 / 1024 AS SizeMB, state FROM sys.master_files WHERE type = 1`,
+    collect: function (rows, metrics) {
+        for (let i = 0; i < rows.length; i++) {
+            const row = rows[i];
+            const mssql_logspace_databse = row[0].value;
+            const mssql_logspace_size_mb = Number.parseFloat(row[3].value);
+            const mssql_logspace_status = Number.parseFloat(row[4].value)==0 ? "online": "offline"; 
+            metrics.mssql_logspace_size_mb.set({database: mssql_logspace_databse,status:mssql_logspace_status},mssql_logspace_size_mb);
+        }
+    }
+};
+
+
+const mssql_databse_space = {
+    metrics: {
+        mssql_databse_space_mb: new client.Gauge({ name: 'mssql_databse_space_mb', help: 'mssql  databse  file size in mb',labelNames: ['database','status']}),
+    },
+    query: `SELECT DB_NAME(database_id) AS DatabaseName, Name, Physical_Name , size * 8 / 1024 AS SizeMB, state FROM sys.master_files WHERE type = 0`,
+    collect: function (rows, metrics) {
+        for (let i = 0; i < rows.length; i++) {
+            const row = rows[i];
+            const mssql_databsespace_databse = row[0].value;
+            const mssql_databsespace_size_mb = Number.parseFloat(row[3].value);
+            const mssql_databsespace_status = Number.parseFloat(row[4].value)==0 ? "online": "offline"; 
+            metrics.mssql_databse_space_mb.set({database: mssql_databsespace_databse,status:mssql_databsespace_status},mssql_databsespace_size_mb);
+        }
+    }
+};
+
+
+
+
 const metrics = [
     mssql_instance_local_time,
     mssql_connections,
@@ -256,7 +294,9 @@ const metrics = [
     mssql_os_sys_memory,
     mssql_database_memery,
     mssql_host_conenct,
-    mssql_network_packs
+    mssql_network_packs,
+    mssql_logspace,
+    mssql_databse_space
 ];
 
 module.exports = {
