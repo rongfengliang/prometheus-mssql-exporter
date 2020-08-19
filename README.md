@@ -23,6 +23,10 @@ Prometheus exporter for Microsoft SQL Server (MSSQL). Exposes the following metr
 *  mssql_total_page_file_kb Total page file in KB
 *  mssql_available_page_file_kb Available page file in KB
 *  mssql_database_memery_cache_size_mb in mb
+*  mssql_network_packs network read && write  in kb
+*  mssql_host_conenct  per host connect count 
+
+
 Please feel free to submit other interesting metrics to include.
 
 Usage
