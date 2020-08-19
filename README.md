@@ -25,7 +25,8 @@ Prometheus exporter for Microsoft SQL Server (MSSQL). Exposes the following metr
 *  mssql_database_memery_cache_size_mb in mb
 *  mssql_network_packs network read && write  in kb
 *  mssql_host_conenct  per host connect count 
-
+*  mssql_logspace log file size in mb
+*  mssql_databse_space database size in mb
 
 Please feel free to submit other interesting metrics to include.
 
